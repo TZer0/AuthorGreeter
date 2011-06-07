@@ -49,7 +49,7 @@ public class AuthorGreeterPlayerListener extends PlayerListener  {
             for (String msg : messages) {
                 if (plugin.adminOnly) {      
                     for (Player pl : plugin.getServer().getOnlinePlayers()) {
-                        if (name.equalsIgnoreCase(pl.getName()) || (permissions == null && pl.isOp()) || (permissions != null && permissions.has(pl, "AuthorGreeter.admin"))) {
+                        if (name.equalsIgnoreCase(pl.getName()) || (permissions == null && pl.isOp()) || (permissions != null && permissions.has(pl, "authorgreeter.admin"))) {
                             pl.sendMessage(msg);
                         }
                     }
