@@ -1,0 +1,8 @@
+name: AuthorGreeter
+main: tzer0.AuthorGreeter.AuthorGreeter
+version: 0.1
+author: TZer0
+commands:
+    ag:
+        description: Allows you to modify AuthorGreeter-settings
+        usage: /ag
