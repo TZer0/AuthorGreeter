@@ -32,6 +32,9 @@ public class AuthorGreeterPlayerListener extends PlayerListener  {
     }
     public void onPlayerJoin(PlayerJoinEvent event) {
         String name = event.getPlayer().getName();
+        if (plugin.ignore.contains(name.toLowerCase())) {
+            return;
+        }
         LinkedList<String> hasMade = new LinkedList<String>();
         for (Plugin plug : plugin.getServer().getPluginManager().getPlugins()) {
             PluginDescriptionFile desc = plug.getDescription();
