@@ -69,7 +69,7 @@ public class AuthorGreeterPlayerListener extends PlayerListener  {
                 if (conf.getBoolean("perplugin", true)) {
                     rewardTimes = (hasMade.size() - oldMade);
                 } else {
-                    if (oldMade != 0) {
+                    if (oldMade == 0) {
                         rewardTimes = 1;
                     }
                 }

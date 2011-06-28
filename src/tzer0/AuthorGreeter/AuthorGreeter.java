@@ -62,7 +62,7 @@ public class AuthorGreeter extends JavaPlugin {
         longVersion = conf.getBoolean("longVersion", true);
         listener.setPointers(conf, this, permissions);
         PluginManager tmp = getServer().getPluginManager();
-        Server sl = new Server(this);
+        IconomyListener sl = new IconomyListener(this);
         tmp.registerEvent(Event.Type.PLAYER_JOIN, listener, Priority.Normal, this);
         tmp.registerEvent(Event.Type.PLUGIN_DISABLE, sl, Priority.Normal, this);
         tmp.registerEvent(Event.Type.PLUGIN_ENABLE, sl, Priority.Normal, this);
@@ -284,10 +284,10 @@ public class AuthorGreeter extends JavaPlugin {
             }
         }
     }
-    class Server extends ServerListener {
+    class IconomyListener extends ServerListener {
         private AuthorGreeter plugin;
 
-        public Server(AuthorGreeter plugin) {
+        public IconomyListener(AuthorGreeter plugin) {
             this.plugin = plugin;
         }
         public void onPluginDisable(PluginDisableEvent event) {
