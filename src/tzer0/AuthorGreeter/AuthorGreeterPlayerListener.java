@@ -7,10 +7,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerListener;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.util.config.Configuration;
 
+import com.iConomy.iConomy;
 import com.nijiko.permissions.PermissionHandler;
 
 // TODO: Auto-generated Javadoc
@@ -31,7 +33,8 @@ public class AuthorGreeterPlayerListener extends PlayerListener  {
         this.permissions = permissions;
     }
     public void onPlayerJoin(PlayerJoinEvent event) {
-        String name = event.getPlayer().getName();
+        Player pl = event.getPlayer();
+        String name = pl.getName();
         if (plugin.ignore.contains(name.toLowerCase())) {
             return;
         }
@@ -48,18 +51,47 @@ public class AuthorGreeterPlayerListener extends PlayerListener  {
         if (hasMade.size() != 0) {
             for (String msg : messages) {
                 if (plugin.adminOnly) {      
-                    for (Player pl : plugin.getServer().getOnlinePlayers()) {
-                        if (name.equalsIgnoreCase(pl.getName()) || (permissions == null && pl.isOp()) || (permissions != null && permissions.has(pl, "authorgreeter.admin"))) {
-                            pl.sendMessage(msg);
+                    for (Player auth : plugin.getServer().getOnlinePlayers()) {
+                        if (name.equalsIgnoreCase(auth.getName()) || (permissions == null && auth.isOp()) 
+                                || (permissions != null && permissions.has(auth, "authorgreeter.admin"))) {
+                            auth.sendMessage(msg);
                         }
                     }
                 } else {
                     plugin.getServer().broadcastMessage(msg);
                 }
             }
+
+            int oldMade = conf.getInt("visited."+name, 0);
+            double reward = conf.getDouble("cashreward", 0.0);
+            if (oldMade < hasMade.size()) {
+                int rewardTimes = 0;
+                if (conf.getBoolean("perplugin", true)) {
+                    rewardTimes = (hasMade.size() - oldMade);
+                } else {
+                    if (oldMade != 0) {
+                        rewardTimes = 1;
+                    }
+                }
+                double finalReward = reward * rewardTimes;
+                conf.setProperty("visited."+name, hasMade.size());
+                conf.save();
+                if (plugin.getServer().getPluginManager().getPlugin("iConomy") != null) { 
+                    if (!(Math.abs(finalReward) < 0.0001)) {
+                        pl.sendMessage(ChatColor.GREEN + String.format("You have been awarded %.2f money for your plugins!", finalReward));
+                        iConomy.getAccount(name).getHoldings().add(reward*(finalReward));
+                    }
+                }
+                if (conf.getKeys().size() != 0) { 
+                    pl.sendMessage(ChatColor.GREEN + "You've been awarded some items for your plugin!");
+                    for (String key : conf.getKeys("itemreward.")) {
+                        pl.getInventory().addItem(new ItemStack(plugin.toInt(key), rewardTimes*conf.getInt("itemreward."+key, 1)));
+                    }
+                }
+            }
         }
     }
-    
+
     LinkedList<String> constructMessages(String name, LinkedList<String> plugins) {
         LinkedList<String> out = new LinkedList<String>();
         out.add(ChatColor.GREEN + String.format("%s has made %d of the plugins running on this server.", name, plugins.size()));
@@ -86,5 +118,5 @@ public class AuthorGreeterPlayerListener extends PlayerListener  {
         }
         return out;
     }
-    
+
 }
