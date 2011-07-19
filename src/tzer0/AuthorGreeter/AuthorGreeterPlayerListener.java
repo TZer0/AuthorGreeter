@@ -2,6 +2,7 @@ package tzer0.AuthorGreeter;
 
 
 import java.util.LinkedList;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -78,13 +79,14 @@ public class AuthorGreeterPlayerListener extends PlayerListener  {
                 conf.save();
                 if (plugin.getServer().getPluginManager().getPlugin("iConomy") != null) { 
                     if (!(Math.abs(finalReward) < 0.0001)) {
-                        pl.sendMessage(ChatColor.GREEN + String.format("You have been awarded %.2f money for your plugins!", finalReward));
+                        pl.sendMessage(ChatColor.GREEN + String.format("You have been awarded %.2f money for your plugin(s)!", finalReward));
                         iConomy.getAccount(name).getHoldings().add(reward*(finalReward));
                     }
                 }
-                if (conf.getKeys().size() != 0) { 
-                    pl.sendMessage(ChatColor.GREEN + "You've been awarded some items for your plugin!");
-                    for (String key : conf.getKeys("itemreward.")) {
+                List<String> keys = conf.getKeys("itemreward.");
+                if (keys != null && keys.size() != 0) { 
+                    pl.sendMessage(ChatColor.GREEN + "You've been awarded some items for your plugin(s)!");
+                    for (String key : keys) {
                         pl.getInventory().addItem(new ItemStack(plugin.toInt(key), rewardTimes*conf.getInt("itemreward."+key, 1)));
                     }
                 }

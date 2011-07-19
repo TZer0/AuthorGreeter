@@ -1,6 +1,6 @@
 name: AuthorGreeter
 main: tzer0.AuthorGreeter.AuthorGreeter
-version: 0.2.1
+version: 0.2.2
 author: TZer0
 commands:
     ag:
